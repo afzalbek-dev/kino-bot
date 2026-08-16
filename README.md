@@ -1,223 +1,124 @@
-# 🎬 Advanced Telegram Movie Bot
+# Kino Bot
 
-A feature-rich Telegram movie platform designed for channels, communities, and media projects. The system helps users quickly discover movies while giving administrators powerful tools to manage content, subscriptions, promotions, and audience activity.
+Kino Bot is a production-oriented Telegram movie discovery bot written in **Python**
+with **Aiogram 3**. It demonstrates a clean movie catalog, VIP access checks, search
+by title, code, country, genre, and year, plus a documented path for connecting a real
+database and Telegram deployment.
 
-> **Project Type:** Telegram Movie Bot / Media Automation Platform  
-> **Main Focus:** Movie Search • VIP Access • Admin Panel • Payments • Channel Automation
+## Features
 
----
+- Aiogram 3 polling bot entrypoint
+- Demo movie catalog with structured JSON sample data
+- Search by movie code, title, genre, country, or release year
+- VIP/free access validation
+- Clear error handling for missing bot configuration
+- Unit-tested core domain logic
+- GitHub Actions CI with Ruff and Pytest
+- MIT licensed and portfolio-ready documentation
 
-## 🚀 Project Overview
+## Architecture
 
-This project is built as a complete Telegram movie ecosystem rather than a simple file-delivery bot. Users can search for movies in multiple ways, save favorites, access premium content, and receive recommendations. Administrators can manage the movie database, users, channels, advertisements, subscriptions, statistics, and content publishing from a centralized control system.
+```text
+kino_bot/
+  bot.py       Telegram handlers and dispatcher wiring
+  catalog.py   Movie search and lookup logic
+  access.py    VIP access rules
+  config.py    Environment-based settings
+  demo.py      Demo catalog loader
+  models.py    Domain models
+```
 
-The repository is used as a **project showcase and documentation page only**. Source code is not published here.
+The Telegram adapter is intentionally thin. Business rules live in small modules that
+can be tested without a Telegram token or network access.
 
----
+## Requirements
 
-## 🔎 Smart Movie Search
+- Python 3.11+
+- Telegram bot token from BotFather for real bot usage
 
-Users can find movies using several search methods:
+## Installation
 
-- Search by movie title
-- Search by unique movie code
-- Search by release year
-- Search by genre
-- Search by country
-- Search by IMDb information
-- Browse new releases
-- Browse top movies
-- Browse recommended movies
-- Inline search inside Telegram
+```bash
+python -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
+cp .env.example .env
+```
 
-The search flow is designed to be simple and fast even when the movie database becomes very large.
+Set `BOT_TOKEN` in `.env` before running the Telegram bot.
 
----
+## Configuration
 
-## 🎞 Movie Library
+| Variable | Required | Description |
+|---|---:|---|
+| `BOT_TOKEN` | Yes for bot runtime | Telegram Bot API token |
+| `DATABASE_URL` | No | Future database connection string |
+| `ADMIN_IDS` | No | Comma-separated Telegram admin IDs |
+| `DEMO_MODE` | No | Keeps the app on bundled sample data |
+| `LOG_LEVEL` | No | Python logging level |
 
-Each movie can contain structured information such as:
+Never commit `.env`, tokens, database dumps, or private Telegram data.
 
-- Movie title
-- Unique movie code
-- Release year
-- Genre
-- Country
-- IMDb rating
-- Description
-- Poster / cover image
-- Video or Telegram file
-- Premium / VIP status
-- Publication status
+## Run
 
-The database is designed to support a large and continuously growing catalog.
+```bash
+python -m kino_bot.bot
+```
 
----
+Demo data is loaded from `sample_data/movies.json`.
 
-## ⭐ VIP & Premium Subscription System
+## Usage
 
-The bot includes a premium access system for monetization.
+1. Start the bot with `/start`.
+2. Send a movie title such as `Night Runner`.
+3. Send a code such as `K002`.
+4. Search by `Uzbekistan`, `Comedy`, or `2025`.
 
-### VIP Features
+VIP movies return a clear subscription message for regular users.
 
-- Multiple subscription plans
-- Premium-only movies and content
-- Subscription expiration tracking
-- Automatic access checks
-- Renewal reminders
-- Payment confirmation workflow
-- Manual or automated payment integration options
-- Admin approval for payment receipts
+## Testing and Quality
 
-VIP access can be customized depending on the business model of the project.
+```bash
+ruff check .
+pytest
+```
 
----
+The tests cover search, code lookup, and VIP access validation.
 
-## 💳 Payments
+## Database Plan
 
-The payment system can support:
+The current repository ships a deterministic demo catalog so the project runs
+immediately. For production, replace `MovieCatalog.from_json` with a SQLAlchemy
+repository backed by PostgreSQL or SQLite. Keep the `MovieCatalog` interface stable
+so Telegram handlers and tests remain simple.
 
-- Manual payment verification
-- Receipt / screenshot submission
-- Admin payment approval
-- Subscription activation after payment
-- Payment history
-- Revenue statistics
-- Flexible pricing plans
+## Security Notes
 
-Additional payment providers can be integrated depending on deployment requirements.
+- Keep `BOT_TOKEN` and production database credentials in environment variables only.
+- Validate admin IDs before enabling privileged commands.
+- Avoid storing raw payment screenshots or private user messages unless a retention
+  policy exists.
+- Use Telegram file IDs instead of downloading private media when possible.
 
----
+## Limitations
 
-## 📢 Mandatory Channel Subscription
+- The bundled implementation uses JSON demo data, not a production database.
+- Admin CRUD, payments, and channel subscription checks are documented extension points.
+- Webhook mode is not included; polling is used for a simple deploy story.
 
-The bot can require users to join selected Telegram channels before using the service.
+## Future Improvements
 
-Features include:
+- SQLAlchemy movie, user, favorite, and subscription tables
+- Admin movie CRUD conversation flow
+- Mandatory channel subscription checks
+- Payment approval workflow
+- Favorites and watch history
+- Docker deployment profile
 
-- Multiple required channels
-- Public channels
-- Private channels
-- Custom invite links
-- Automatic membership verification
-- Re-check button for users
-- Admin-controlled channel management
+## License
 
-This is useful for growing Telegram channels through the bot audience.
-
----
-
-## 📡 Automatic Channel Publishing
-
-Movies can be published automatically to connected Telegram channels.
-
-Possible post content:
-
-- Movie poster
-- Movie name
-- Movie code
-- Year and genre
-- Description
-- IMDb information
-- Inline button to open the bot
-
-This reduces manual posting work for channel administrators.
-
----
-
-## ❤️ Favorites & Watch History
-
-Users can have their own personalized movie experience.
-
-### User Features
-
-- Save movies to favorites
-- View saved movies
-- View watch history
-- Remove movies from favorites
-- Continue discovering similar content
-
-These features help improve retention and make the bot easier to use regularly.
-
----
-
-## 🛠 Powerful Admin Panel
-
-The project includes a comprehensive administrator control system.
-
-### Movie Management
-
-- Add movies
-- Edit movie information
-- Delete movies
-- Change movie code
-- Manage categories and genres
-- Mark movies as VIP / premium
-- Publish movies to channels
-
-### User Management
-
-- View users
-- Search users
-- Manage VIP access
-- Block / unblock users
-- View activity information
-
-### Channel Management
-
-- Add required channels
-- Remove channels
-- Manage public and private channel links
-- Manage automatic publication channels
-
-### Advertising & Broadcast
-
-- Send announcements
-- Send advertisements
-- Broadcast messages to users
-- Send media with text and buttons
-- Target bot users with promotional content
-
-### Statistics
-
-The administration system can display statistics such as:
-
-- Total users
-- Active users
-- Movie count
-- VIP users
-- Subscription activity
-- Payment / revenue information
-- Popular movies
-- User engagement
-
----
-
-## 👥 Group Support
-
-The system can also support Telegram groups where required.
-
-Possible functionality includes:
-
-- Group registration
-- Group usage statistics
-- Permission management
-- Movie search from groups
-- Admin-controlled access
-
----
-
-## 🧾 Reports & Data
-
-The bot can provide administrative reports for easier project management.
-
-Examples:
-
-- User statistics
-- Movie statistics
-- VIP subscription reports
-- Payment reports
-- Activity reports
+MIT
 - Exportable summaries
 
 PDF reporting can also be included when required.

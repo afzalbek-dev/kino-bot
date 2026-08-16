@@ -1,0 +1,32 @@
+[
+  {
+    "code": "K001",
+    "title": "The Silent Valley",
+    "year": 2024,
+    "genre": "Drama",
+    "country": "Uzbekistan",
+    "imdb": 8.2,
+    "description": "A family story about courage, migration, and returning home.",
+    "access": "free"
+  },
+  {
+    "code": "K002",
+    "title": "Night Runner",
+    "year": 2025,
+    "genre": "Action",
+    "country": "Turkey",
+    "imdb": 7.8,
+    "description": "A courier discovers a criminal network during one dangerous night.",
+    "access": "vip"
+  },
+  {
+    "code": "K003",
+    "title": "Laughing Samarkand",
+    "year": 2023,
+    "genre": "Comedy",
+    "country": "Uzbekistan",
+    "imdb": 7.1,
+    "description": "Friends start a small cinema and accidentally become local celebrities.",
+    "access": "free"
+  }
+]

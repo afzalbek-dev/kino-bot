@@ -1,0 +1,16 @@
+LICENSE
+README.md
+pyproject.toml
+kino_bot/__init__.py
+kino_bot/access.py
+kino_bot/bot.py
+kino_bot/catalog.py
+kino_bot/config.py
+kino_bot/demo.py
+kino_bot/models.py
+kino_bot.egg-info/PKG-INFO
+kino_bot.egg-info/SOURCES.txt
+kino_bot.egg-info/dependency_links.txt
+kino_bot.egg-info/requires.txt
+kino_bot.egg-info/top_level.txt
+tests/test_catalog.py
