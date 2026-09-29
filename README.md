@@ -1,222 +1,161 @@
-# Kino Bot
+# Kino Bot — Telegram Kino Qidiruv Boti / Telegram Movie Discovery Bot
 
-Kino Bot is a production-oriented Telegram movie discovery bot written in **Python**
-with **Aiogram 3**. It demonstrates a clean movie catalog, VIP access checks, search
-by title, code, country, genre, and year, plus a documented path for connecting a real
-database and Telegram deployment.
+**Kino Bot** — bu **Python** va **Aiogram 3** freymvorkida yozilgan, kinolarni qidirish, VIP kirish huquqlarini tekshirish va qulay katalog tizimiga ega Telegram boti loyihasi.
 
-## Features
+---
 
-- Aiogram 3 polling bot entrypoint
-- Demo movie catalog with structured JSON sample data
-- Search by movie code, title, genre, country, or release year
-- VIP/free access validation
-- Clear error handling for missing bot configuration
-- Unit-tested core domain logic
-- GitHub Actions CI with Ruff and Pytest
-- MIT licensed and portfolio-ready documentation
+## 🇺🇿 O'zbekcha Ma'lumot
 
-## Architecture
+### 📋 Loyiha Haqida
+
+Kino Bot foydalanuvchilarga kinolarni nomi, kodi, janri, mamlakati yoki chiqarilgan yili bo'yicha tez va qulay qidirish imkonini beradi. Loyiha arxitekturasi toza (clean architecture) tamoyillariga asoslangan bo'lib, biznes mantiq Telegram API'dan ajratilgan. Bu testlarni osongina o'tkazish va kelajakda bazani PostgreSQL/SQLite yoki boshqa ma'lumotlar bazalariga ulashni yengillashtiradi.
+
+---
+
+### ✨ Asosiy Imkoniyatlar (Features)
+
+- **Aiogram 3 Polling Mode:** Telegram Bot API bilan zamonaviy asinxron ishlash.
+- **Kino Katalogi:** JSON formatidagi namunaviy kinolar bazasi (`sample_data/movies.json`).
+- **Ko'p qirrali Qidiruv (Search):**
+  - Kino kodi bo'yicha (masalan: `K001`, `K002`)
+  - Nomi bo'yicha (masalan: `Night Runner`, `Inception`)
+  - Janr bo'yicha (masalan: `Action`, `Comedy`)
+  - Mamlakat bo'yicha (masalan: `USA`, `Uzbekistan`)
+  - Chiqqan yili bo'yicha (masalan: `2025`, `2023`)
+- **VIP & Bepul (Free) Kirish Tizimi:** Kinolarga kirish darajasini (bepul yoki VIP) tekshirish va tegishli xabarlarni ko'rsatish.
+- **Konfiguratsiya va Xavfsizlik:** Pydantic va environment variables (`.env`) orqali sozlamalarni xavfsiz boshqarish.
+- **Testlar va Kod Sifati:** Pytest va Ruff orqali avtomatik testlash va linter tekshiruvi.
+
+---
+
+### 🏗 Arxitektura va Tuzilish (Architecture)
 
 ```text
 kino_bot/
-  bot.py       Telegram handlers and dispatcher wiring
-  catalog.py   Movie search and lookup logic
-  access.py    VIP access rules
-  config.py    Environment-based settings
-  demo.py      Demo catalog loader
-  models.py    Domain models
+├── __init__.py
+├── access.py      # VIP va bepul kinolarga kirish qoidalari hamda xabarlar
+├── bot.py         # Telegram handlerlar, handlerlarni ulash va start_polling
+├── catalog.py     # Kinolarni qidirish, kod bo'yicha topish va saralash mantig'i
+├── config.py      # Pydantic orqali .env sozlamalarini yuklash
+├── demo.py        # Demo katalog yuklagich (JSON fayldan)
+└── models.py      # Pydantic va Enum domen modellari (Movie, UserProfile va h.k.)
+
+sample_data/
+└── movies.json    # Namunaviy kinolar ma'lumotlar bazasi
+
+tests/
+└── test_catalog.py # Qidiruv, kod va VIP kirish huquqlarini tekshiruvchi testlar
 ```
 
-The Telegram adapter is intentionally thin. Business rules live in small modules that
-can be tested without a Telegram token or network access.
+---
 
-## Requirements
+### ⚙️ Texnologiyalar Staki (Tech Stack)
 
-- Python 3.11+
-- Telegram bot token from BotFather for real bot usage
+- **Python 3.11+**
+- **Aiogram 3.x** — Telegram Bot API freymvorki
+- **Pydantic v2 & Pydantic-Settings** — Ma'lumotlar validatsiyasi va sozlamalar
+- **SQLAlchemy & Aiosqlite** — Asinxron ORM va ma'lumotlar bazasi tayyorgarligi
+- **Pytest & Pytest-Asyncio** — Asinxron unit testlar
+- **Ruff** — Tezkor Python linter va kod formatteri
 
-## Installation
+---
+
+### 🚀 O'rnatish va Ishga Tushirish (Installation & Run)
+
+#### 1. Repozitoriyani klonlash va virtual muhitni yaratish:
 
 ```bash
-python -m venv .venv
+python3 -m venv .venv
 source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
+```
+
+#### 2. Bog'liqliklarni (dependencies) o'rnatish:
+
+```bash
+python3 -m pip install --upgrade pip
+python3 -m pip install -e ".[dev]"
+```
+
+#### 3. `.env` faylini sozlash:
+
+`.env.example` faylidan nusxa olib `.env` yaratasiz:
+
+```bash
 cp .env.example .env
 ```
 
-Set `BOT_TOKEN` in `.env` before running the Telegram bot.
+`.env` fayliga BotFather'dan olingan tokeningizni kiriting:
 
-## Configuration
-
-| Variable | Required | Description |
-|---|---:|---|
-| `BOT_TOKEN` | Yes for bot runtime | Telegram Bot API token |
-| `DATABASE_URL` | No | Future database connection string |
-| `ADMIN_IDS` | No | Comma-separated Telegram admin IDs |
-| `DEMO_MODE` | No | Keeps the app on bundled sample data |
-| `LOG_LEVEL` | No | Python logging level |
-
-Never commit `.env`, tokens, database dumps, or private Telegram data.
-
-## Run
-
-```bash
-python -m kino_bot.bot
+```env
+BOT_TOKEN=123456789:ABCdefGHIjklMNOpqrsTUVwxyZ
+DATABASE_URL=sqlite+aiosqlite:///./kino.sqlite3
+ADMIN_IDS=12345678,87654321
+DEMO_MODE=True
+LOG_LEVEL=INFO
 ```
 
-Demo data is loaded from `sample_data/movies.json`.
-
-## Usage
-
-1. Start the bot with `/start`.
-2. Send a movie title such as `Night Runner`.
-3. Send a code such as `K002`.
-4. Search by `Uzbekistan`, `Comedy`, or `2025`.
-
-VIP movies return a clear subscription message for regular users.
-
-## Testing and Quality
+#### 4. Botni ishga tushirish:
 
 ```bash
+python3 -m kino_bot.bot
+```
+
+---
+
+### 💡 Ishlatish (Usage Guide)
+
+1. Botga `/start` buyrug'ini yuboring.
+2. Qidirish uchun kino nomi (masalan: `Inception`), kodi (`K001`), janri (`Drama`), mamlakati (`Uzbekistan`) yoki yilini (`2025`) yuboring.
+3. Agar kino VIP bo'lsa va foydalanuvchida VIP obuna bo'lmasa, bot obuna bo me'zonlarini eslatuvchi xabar beradi.
+
+---
+
+### 🧪 Testlash va Kod Sifatini Tekshirish (Testing)
+
+Testlarni va linter tekshiruvini ishga tushirish uchun:
+
+```bash
+# Linter tekshiruvi
 ruff check .
+
+# Unit testlarni ishga tushirish
 pytest
 ```
 
-The tests cover search, code lookup, and VIP access validation.
+---
 
-## Database Plan
+### 🔒 Xavfsizlik Eslatmalari (Security)
 
-The current repository ships a deterministic demo catalog so the project runs
-immediately. For production, replace `MovieCatalog.from_json` with a SQLAlchemy
-repository backed by PostgreSQL or SQLite. Keep the `MovieCatalog` interface stable
-so Telegram handlers and tests remain simple.
-
-## Security Notes
-
-- Keep `BOT_TOKEN` and production database credentials in environment variables only.
-- Validate admin IDs before enabling privileged commands.
-- Avoid storing raw payment screenshots or private user messages unless a retention
-  policy exists.
-- Use Telegram file IDs instead of downloading private media when possible.
-
-## Limitations
-
-- The bundled implementation uses JSON demo data, not a production database.
-- Admin CRUD, payments, and channel subscription checks are documented extension points.
-- Webhook mode is not included; polling is used for a simple deploy story.
-
-## Future Improvements
-
-- SQLAlchemy movie, user, favorite, and subscription tables
-- Admin movie CRUD conversation flow
-- Mandatory channel subscription checks
-- Payment approval workflow
-- Favorites and watch history
-- Docker deployment profile
-
-## License
-
-MIT
-- Exportable summaries
-
-PDF reporting can also be included when required.
+- `BOT_TOKEN` va maxfiy kalitlarni hech qachon GitHub repozitoriyasiga yuklamang (`.gitignore` sozlang).
+- Admin panel va maxfiy buyruqlarni ishlatishdan oldin Telegram ID orqali xavfsiz tekshiruvdan o'tkazing.
 
 ---
 
-## 🔐 Security & Access Control
+## 🇬🇧 English Documentation
 
-The project is designed with controlled administrative access and protected configuration.
+### 📋 About the Project
 
-Security considerations include:
+**Kino Bot** is a production-ready Telegram movie discovery bot built with **Python** and **Aiogram 3**. It offers search capabilities by movie code, title, genre, country, and release year, alongside VIP/free access control and clean domain logic separating Telegram handlers from core business rules.
 
-- Admin-only management commands
-- Secure bot token storage
-- Environment-based secrets
-- Permission checks
-- User access validation
-- Payment verification controls
-- Rate-limit / anti-spam options
+### ✨ Key Features
 
-Sensitive credentials are never intended to be exposed publicly.
+- **Aiogram 3 Async Polling:** High-performance Telegram Bot API integration.
+- **Movie Search:** Flexible searching by code, title, genre, country, or year.
+- **VIP Access Control:** Differentiates free and VIP content.
+- **Environment Configuration:** Pydantic settings with `.env` support.
+- **Comprehensive Testing:** Unit tests with Pytest and linting with Ruff.
 
----
+### 🚀 Quick Start
 
-## ⚙️ Technology Stack
-
-The project is designed around a modern Python Telegram stack:
-
-- **Python 3.11+**
-- **Aiogram 3.x**
-- **SQLite / PostgreSQL**
-- **SQLAlchemy**
-- **Telegram Bot API**
-- **Async programming**
-- **Linux hosting / VPS deployment**
-- Optional Redis and background task processing for larger deployments
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+cp .env.example .env
+# Set BOT_TOKEN in .env
+python3 -m kino_bot.bot
+```
 
 ---
 
-## 📈 Designed for Growth
-
-The architecture can be extended with additional modules such as:
-
-- Recommendation engine
-- Multi-language interface
-- Referral program
-- Promo codes
-- Premium packages
-- Movie request system
-- Comments and ratings
-- Personalized recommendations
-- Web admin dashboard
-- Telegram Mini App
-- External movie API integrations
-- Automatic metadata collection
-
----
-
-## 🎯 Use Cases
-
-This solution is suitable for:
-
-- Telegram movie channels
-- Media communities
-- Subscription-based entertainment projects
-- Private premium movie communities
-- Movie catalog services
-- Telegram content businesses
-
----
-
-## 👨‍💻 Developer
-
-**Afzalbek — Python & Telegram Bot Developer**
-
-Specialized in:
-
-- Telegram Bots
-- Aiogram 3.x
-- FastAPI Backend Development
-- Telegram Mini Apps
-- Admin Panels
-- API Integrations
-- AI Automation
-- Web Applications
-
-### Contact
-
-- **Telegram:** [@Obunachi786](https://t.me/Obunachi786)
-- **WhatsApp:** [+62 838-6529-5905](https://wa.me/6283865295905)
-- **Location:** Qashqadaryo, Uzbekistan
-
----
-
-## 📌 Note
-
-This repository contains **project information and portfolio documentation only**. The source code of the commercial bot is not publicly available.
-
----
-
-© 2026 Afzalbek — Telegram Bot & Python Developer
+© 2026 Kino Bot — Python & Telegram Bot Development
