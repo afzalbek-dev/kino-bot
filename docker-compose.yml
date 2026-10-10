@@ -1,0 +1,14 @@
+services:
+  kino-bot:
+    build: .
+    container_name: kino-bot
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - kino_data:/app/data
+    environment:
+      - DATABASE_URL=sqlite+aiosqlite:///app/data/kino.sqlite3
+
+volumes:
+  kino_data:

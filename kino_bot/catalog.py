@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import random
 from pathlib import Path
 
 from .models import Movie, MovieAccess
@@ -54,3 +55,17 @@ class MovieCatalog:
 
     def top(self, *, limit: int = 5) -> list[Movie]:
         return sorted(self._movies, key=lambda movie: (-movie.imdb, movie.title))[:limit]
+
+    def random_movie(self) -> Movie | None:
+        if not self._movies:
+            return None
+        return random.choice(self._movies)
+
+    def genres(self) -> list[str]:
+        all_genres = set()
+        for movie in self._movies:
+            for g in movie.genre.split(","):
+                g_clean = g.strip()
+                if g_clean:
+                    all_genres.add(g_clean)
+        return sorted(all_genres)

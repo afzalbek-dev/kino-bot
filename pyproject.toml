@@ -17,6 +17,8 @@ dev = ["pytest>=8.2", "pytest-asyncio>=0.23", "ruff>=0.5"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+pythonpath = ["."]
 testpaths = ["tests"]
 
 [tool.ruff]

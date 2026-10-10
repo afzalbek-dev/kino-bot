@@ -28,5 +28,55 @@
     "imdb": 7.1,
     "description": "Friends start a small cinema and accidentally become local celebrities.",
     "access": "free"
+  },
+  {
+    "code": "K004",
+    "title": "Oasis Chronicles",
+    "year": 2024,
+    "genre": "Sci-Fi, Adventure",
+    "country": "Uzbekistan",
+    "imdb": 8.6,
+    "description": "Explorers in the Kyzylkum desert uncover an ancient hidden technological sanctuary.",
+    "access": "vip"
+  },
+  {
+    "code": "K005",
+    "title": "Bosphorus Code",
+    "year": 2025,
+    "genre": "Thriller, Crime",
+    "country": "Turkey",
+    "imdb": 8.0,
+    "description": "Cybersecurity operatives unravel a digital heist taking place across Istanbul.",
+    "access": "free"
+  },
+  {
+    "code": "K006",
+    "title": "Silk Road Horizon",
+    "year": 2022,
+    "genre": "History, Drama",
+    "country": "Uzbekistan",
+    "imdb": 8.8,
+    "description": "An epic historical chronicle tracing merchant caravans across medieval Bukhara and Samarkand.",
+    "access": "free"
+  },
+  {
+    "code": "K007",
+    "title": "Midnight In Seoul",
+    "year": 2024,
+    "genre": "Action, Mystery",
+    "country": "South Korea",
+    "imdb": 8.4,
+    "description": "A private investigator teams up with a rogue detective to uncover a conglomerate conspiracy.",
+    "access": "vip"
+  },
+  {
+    "code": "K008",
+    "title": "Tashkent Beats",
+    "year": 2025,
+    "genre": "Music, Romance",
+    "country": "Uzbekistan",
+    "imdb": 7.6,
+    "description": "Young electronic music producers build an underground music movement in modern Tashkent.",
+    "access": "free"
   }
 ]
