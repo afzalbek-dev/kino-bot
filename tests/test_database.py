@@ -1,5 +1,7 @@
-import pytest
 from pathlib import Path
+
+import pytest
+
 from kino_bot.database import Database
 from kino_bot.models import Movie, MovieAccess
 

@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
-from pathlib import Path
 from contextlib import asynccontextmanager
+from datetime import UTC, datetime
+from pathlib import Path
 from typing import Any
 
 import aiosqlite
@@ -104,7 +104,7 @@ class Database:
     async def get_or_create_user(
         self, telegram_id: int, username: str = "", first_name: str = ""
     ) -> UserProfile:
-        now_iso = datetime.now(timezone.utc).isoformat()
+        now_iso = datetime.now(UTC).isoformat()
         async with self.get_connection() as db:
             cursor = await db.execute(
                 "SELECT telegram_id, is_vip, vip_expires_at FROM users WHERE telegram_id = ?",
@@ -116,9 +116,9 @@ class Database:
                 if row["vip_expires_at"]:
                     try:
                         exp = datetime.fromisoformat(row["vip_expires_at"])
-                        if exp < datetime.now(timezone.utc):
+                        if exp < datetime.now(UTC):
                             is_vip = False
-                    except Exception:
+                    except (ValueError, TypeError):
                         pass
                 return UserProfile(telegram_id=telegram_id, is_vip=is_vip)
 
@@ -182,7 +182,7 @@ class Database:
             if telegram_id:
                 await db.execute(
                     "INSERT INTO searches (telegram_id, query, created_at) VALUES (?, ?, ?)",
-                    (telegram_id, query, datetime.now(timezone.utc).isoformat()),
+                    (telegram_id, query, datetime.now(UTC).isoformat()),
                 )
                 await db.commit()
 
@@ -232,7 +232,7 @@ class Database:
                 return False
             await db.execute(
                 "INSERT OR IGNORE INTO favorites (telegram_id, movie_code, added_at) VALUES (?, ?, ?)",
-                (telegram_id, code, datetime.now(timezone.utc).isoformat()),
+                (telegram_id, code, datetime.now(UTC).isoformat()),
             )
             await db.commit()
             return True

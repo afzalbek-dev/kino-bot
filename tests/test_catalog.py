@@ -1,4 +1,5 @@
 import pytest
+
 from kino_bot.access import access_message, can_watch
 from kino_bot.demo import load_demo_catalog
 from kino_bot.models import UserProfile

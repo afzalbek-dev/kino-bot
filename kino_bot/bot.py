@@ -3,20 +3,21 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
-from datetime import datetime, timedelta, timezone
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 
 from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command, CommandStart
 from aiogram.types import CallbackQuery, InlineKeyboardButton, InlineKeyboardMarkup, Message
 
-from .access import access_message, can_watch
+from .access import access_message
 from .config import get_settings
 from .database import Database
 from .demo import load_demo_catalog
 from .models import Movie, MovieAccess, UserProfile
 
 settings = get_settings()
+logger = logging.getLogger("kino_bot")
 demo_catalog = load_demo_catalog()
 db = Database(settings.database_url)
 
@@ -128,7 +129,7 @@ async def top_command(message: Message) -> None:
         movies = demo_catalog.top(limit=5)
 
     user_id = message.from_user.id if message.from_user else 0
-    user = await db.get_or_create_user(user_id)
+    await db.get_or_create_user(user_id)
 
     lines = ["🏆 <b>Top Rated Movies:</b>\n"]
     for idx, m in enumerate(movies, 1):
@@ -232,10 +233,10 @@ async def grant_vip_command(message: Message) -> None:
     try:
         target_id = int(parts[1])
         days = int(parts[2]) if len(parts) > 2 else 30
-        exp_date = (datetime.now(timezone.utc) + timedelta(days=days)).isoformat()
+        exp_date = (datetime.now(UTC) + timedelta(days=days)).isoformat()
         await db.set_vip(target_id, is_vip=True, expires_at=exp_date)
         await message.answer(f"✅ User <code>{target_id}</code> granted VIP for {days} days.", parse_mode="HTML")
-    except Exception as e:
+    except (ValueError, KeyError, RuntimeError) as e:
         await message.answer(f"❌ Error granting VIP: {e}")
 
 
@@ -277,7 +278,7 @@ async def process_movie_lookup(message: Message, code: str, silent_not_found: bo
 
 async def execute_search(message: Message, query: str) -> None:
     user_id = message.from_user.id if message.from_user else 0
-    user = await db.get_or_create_user(user_id)
+    await db.get_or_create_user(user_id)
 
     results = await db.search_movies(query, limit=5, telegram_id=user_id)
     if not results:
@@ -416,7 +417,7 @@ async def main() -> None:
 
     bot = Bot(settings.bot_token)
     dp = build_dispatcher()
-    logging.info("Starting Kino Bot polling...")
+    logger.info("Starting Kino Bot polling...")
     await dp.start_polling(bot)
 
 
